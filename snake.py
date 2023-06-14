@@ -5,12 +5,12 @@ class App(object):
     def __init__(self):
         self.run()
         self.__direction = "right"
-        self.__score = 0
+        self.__score = 1
         self.__dt = 0
         self.__position_play = pygame.Vector2(self.__screen.get_height()/3,self.__screen.get_width()/3)#position of player
 
         self.__RUNNING = True
-        self.__FLAG = False
+        self.__GAINED = True
 
 
         while self.__RUNNING:
@@ -18,6 +18,7 @@ class App(object):
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.__RUNNING = False
+
 
             self.background()
             self.player()
@@ -28,40 +29,76 @@ class App(object):
 
             self.score_tab()
 
-            # if self.__FLAG == False:
-            #     self.point()
-            #     self.__FLAG = True
-                
+            if self.__GAINED:
+                self.__position_point = pygame.Vector2(random.randint(50,self.__screen.get_height()-20),random.randint(50,self.__screen.get_height()-20))
+
+                if random.randint(0,2)==0:
+                    self.__color = "red"
+                    self.__add = 1
+                elif random.randint(0,2)==1:
+                    self.__color = "purple"
+                    self.__add = 2
+                else:
+                    self.__color = "orange"
+                    self.__add = 3
+
+                self.__GAINED = False
+
+            self.check_point()
+
+            self.point()
+
             pygame.display.flip()
             self.fps()
 
         self.exit()
 
+
+    def check_point(self):
+        for x in range(0,10):
+            if self.__position_point.x+x == self.__position_play.x:
+                self.__score += self.__add
+                self.__GAINED = True
+                return
+
+        for x in range(0,10):
+            if self.__position_point.y+x == self.__position_play.y:
+                self.__score += self.__add
+                self.__GAINED = True
+                return
+
+
     def score_tab(self):
 
-        self.__font = pygame.font.SysFont('comicsans', 30)
-        self.__label = self.__font.render(f'WYNIK: {self.__score}', 1, (255, 255, 255))
-        self.__screen.blit(self.__label, (25,25))
+        self.__font = pygame.font.SysFont('comicsans', 40)
+        self.__label = self.__font.render(f'Score: {self.__score-1}         ', 1, "black", "white")
+        self.__screen.blit(self.__label, (0,0))
+        
+        self.__font = pygame.font.SysFont('comicsans',40)
+        self.__label = self.__font.render(f'Red = 1          ', 1, "red", "white")
+        self.__screen.blit(self.__label, (0,25))
+        
+        self.__font = pygame.font.SysFont('comicsans',40)
+        self.__label = self.__font.render(f'Purple = 2     ', 1, "purple", "white")
+        self.__screen.blit(self.__label, (0,52))
+        
+        self.__font = pygame.font.SysFont('comicsans',40)
+        self.__label = self.__font.render(f'Orange = 3    ', 1, "orange", "white")
+        self.__screen.blit(self.__label, (0,78))
 
 
     def background(self):
         self.__screen.fill("#95BF50")
         pass
 
+
     def player(self):
         self.__player = pygame.draw.circle(self.__screen, "#1E8234", self.__position_play, 25)
 
 
     def point(self):
-        self.__point = pygame.Vector2(100,100)
+        self.__point = pygame.draw.circle(self.__screen , self.__color , self.__position_point , 20)
         
-        if random.randint(0,5) == 0:
-            pygame.draw.circle(self.__screen , "blue" , self.__point , 20)
-        else:
-            pygame.draw.circle(self.__screen , "red" , self.__point , 20)
-
-        pygame.display.update()
-
 
     def movement(self,direction):
 
@@ -96,7 +133,7 @@ class App(object):
         pygame.init()
         self.__screen = pygame.display.set_mode((800, 600))
         self.__clock = pygame.time.Clock()
-        # pygame.display.toggle_fullscreen() # turning on the fullscreen
+        pygame.display.toggle_fullscreen() # turning on the fullscreen
         pygame.display.set_caption("Better Snake")
         pygame.display.set_icon(pygame.image.load("snake.jpg"))
 
