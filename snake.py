@@ -14,7 +14,7 @@ class App(object):
 
 
         while self.__RUNNING:
-            self.score_tab()
+        
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.__RUNNING = False
@@ -28,9 +28,9 @@ class App(object):
 
             self.score_tab()
 
-            if self.__FLAG == False:
-                self.point()
-                self.__FLAG = True
+            # if self.__FLAG == False:
+            #     self.point()
+            #     self.__FLAG = True
                 
             pygame.display.flip()
             self.fps()
