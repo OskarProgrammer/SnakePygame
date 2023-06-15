@@ -89,17 +89,23 @@ class App(object):
 
 
     def check_point(self):
+        I = 0
+
         for x in range(0,10):
             if self.__position_point.x+x == self.__position_play.x:
-                self.__score += self.__add
-                self.__GAINED = True
-                return
+                I+=1
+                break
 
         for x in range(0,10):
             if self.__position_point.y+x == self.__position_play.y:
-                self.__score += self.__add
-                self.__GAINED = True
-                return
+                I += 1
+                break
+        
+        if I == 2:
+            self.__score += self.__add
+            self.__GAINED = True
+        else:
+            self.__GAINED = False
 
 
     def score_tab(self):
