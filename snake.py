@@ -46,12 +46,46 @@ class App(object):
 
             self.check_point()
 
+            if self.check_lose():
+                print(f"You lost, your score: {self.__score}")
+
+                self.end()
+
+                self.__score = 0
+
+                self.__RUNNING = False
+                
             self.point()
 
             pygame.display.flip()
             self.fps()
 
         self.exit()
+
+    def end(self):
+        self.background()
+
+        #ustawienie obrazu koncowego
+        self.__font = pygame.font.SysFont('comicsans', 50)
+        self.__label = self.__font.render(f'You lost... Your score: {self.__score}', 1, "black", "white")
+        self.__screen.blit(self.__label, (100,200))
+        
+        pygame.display.flip() # odswiezenie ekranu
+
+        # while True:
+        #     self.__key = pygame.key.get_pressed()
+
+        #     if self.__key[pygame.K_LEFT]:
+        #         break
+        #     else:
+        #         print("nothing")
+        pygame.event.wait(timeout=2)
+
+
+    def check_lose(self):
+        if self.__position_play.x >= self.__screen.get_width() or self.__position_play.y >= self.__screen.get_height() or self.__position_play.x <= 0 or self.__position_play.y <= 0:
+            return True
+        return False
 
 
     def check_point(self):
@@ -74,17 +108,17 @@ class App(object):
         self.__label = self.__font.render(f'Score: {self.__score-1}         ', 1, "black", "white")
         self.__screen.blit(self.__label, (0,0))
         
-        self.__font = pygame.font.SysFont('comicsans',40)
-        self.__label = self.__font.render(f'Red = 1          ', 1, "red", "white")
-        self.__screen.blit(self.__label, (0,25))
+        # self.__font = pygame.font.SysFont('comicsans',40)
+        # self.__label = self.__font.render(f'Red = 1          ', 1, "red", "white")
+        # self.__screen.blit(self.__label, (0,25))
         
-        self.__font = pygame.font.SysFont('comicsans',40)
-        self.__label = self.__font.render(f'Purple = 2     ', 1, "purple", "white")
-        self.__screen.blit(self.__label, (0,52))
+        # self.__font = pygame.font.SysFont('comicsans',40)
+        # self.__label = self.__font.render(f'Purple = 2     ', 1, "purple", "white")
+        # self.__screen.blit(self.__label, (0,52))
         
-        self.__font = pygame.font.SysFont('comicsans',40)
-        self.__label = self.__font.render(f'Orange = 3    ', 1, "orange", "white")
-        self.__screen.blit(self.__label, (0,78))
+        # self.__font = pygame.font.SysFont('comicsans',40)
+        # self.__label = self.__font.render(f'Orange = 3    ', 1, "orange", "white")
+        # self.__screen.blit(self.__label, (0,78))
 
 
     def background(self):
@@ -97,45 +131,45 @@ class App(object):
 
 
     def point(self):
-        self.__point = pygame.draw.circle(self.__screen , self.__color , self.__position_point , 20)
+        self.__point = pygame.draw.circle(self.__screen , self.__color , self.__position_point , 20) #draw the point circle on the choosen coordinates
         
 
     def movement(self,direction):
 
-        if direction == "left":
-            self.__position_play.x -= 10
+        if direction == "left":         
+            self.__position_play.x -= 10 #move to the left by 10 pixels
         elif direction == "right":
-            self.__position_play.x += 10
+            self.__position_play.x += 10 #move to the right by 10 pixels
         elif direction == "up":
-            self.__position_play.y -= 10
+            self.__position_play.y -= 10 #move to the up by 10 pixels
         elif direction == "down":
-            self.__position_play.y += 10
+            self.__position_play.y += 10 #move to the down by 10 pixels
 
 
-    def event_handling(self,event):
-        if event[pygame.K_LEFT] or event[pygame.K_a]:
+    def event_handling(self,event): #handling events 
+        if event[pygame.K_LEFT] or event[pygame.K_a]: #change direction to left
             self.__direction = "left"
-        elif event[pygame.K_RIGHT] or event[pygame.K_d]:
+        elif event[pygame.K_RIGHT] or event[pygame.K_d]:#change direction to right
             self.__direction = "right"
-        elif event[pygame.K_UP] or event[pygame.K_w]:
+        elif event[pygame.K_UP] or event[pygame.K_w]:#change direction to up
             self.__direction = "up"
-        elif event[pygame.K_DOWN] or event[pygame.K_s]:
+        elif event[pygame.K_DOWN] or event[pygame.K_s]:#change direction to down
             self.__direction = "down"
-        elif event[pygame.K_ESCAPE] or event[pygame.K_e]:
+        elif event[pygame.K_ESCAPE] or event[pygame.K_e]:#exit the application
             self.__RUNNING = False
 
 
     def fps(self):
-        self.__dt = self.__clock.tick(45)/1000 + self.__score
+        self.__dt = self.__clock.tick(45)/1000 + self.__score #configurating frame rate
 
 
     def run(self):
-        pygame.init()
-        self.__screen = pygame.display.set_mode((800, 600))
-        self.__clock = pygame.time.Clock()
-        pygame.display.toggle_fullscreen() # turning on the fullscreen
-        pygame.display.set_caption("Better Snake")
-        pygame.display.set_icon(pygame.image.load("snake.jpg"))
+        pygame.init() #initialize application
+        self.__screen = pygame.display.set_mode((800, 600)) #setting resolution
+        self.__clock = pygame.time.Clock() #starting clock
+        # pygame.display.toggle_fullscreen() # turning on the fullscreen
+        pygame.display.set_caption("Better Snake") #setting the title of app
+        pygame.display.set_icon(pygame.image.load("snake.jpg")) #changing the icon
 
 
     def exit(self):
