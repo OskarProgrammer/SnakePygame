@@ -43,8 +43,12 @@ class App(object):
                     self.__add = 3
 
                 self.__GAINED = False
-
-            self.check_point()
+            
+            try:
+                self.point()
+                self.check_point()
+            except:
+                pass
 
             if self.check_lose():
                 print(f"You lost, your score: {self.__score}")
@@ -54,13 +58,12 @@ class App(object):
                 self.__score = 0
 
                 self.__RUNNING = False
-                
-            self.point()
 
             pygame.display.flip()
             self.fps()
 
         self.exit()
+
 
     def end(self):
         self.background()
@@ -89,24 +92,11 @@ class App(object):
 
 
     def check_point(self):
-        I = 0
-
-        for x in range(0,10):
-            if self.__position_point.x+x == self.__position_play.x:
-                I+=1
-                break
-
-        for x in range(0,10):
-            if self.__position_point.y+x == self.__position_play.y:
-                I += 1
-                break
-        
-        if I == 2:
+        if self.__player_rect.colliderect(self.__point_rect):
             self.__score += self.__add
             self.__GAINED = True
         else:
-            self.__GAINED = False
-
+            pass
 
     def score_tab(self):
 
@@ -133,11 +123,15 @@ class App(object):
 
 
     def player(self):
-        self.__player = pygame.draw.circle(self.__screen, "#1E8234", self.__position_play, 25)
+        self.__player_rect = pygame.Rect(self.__position_play.x, self.__position_play.y, 40, 40)
+
+        pygame.draw.rect(self.__screen, "#1E8234", self.__player_rect)
 
 
     def point(self):
-        self.__point = pygame.draw.circle(self.__screen , self.__color , self.__position_point , 20) #draw the point circle on the choosen coordinates
+        self.__point_rect = pygame.Rect(self.__position_point.x, self.__position_point.y, 40, 40)
+
+        pygame.draw.rect(self.__screen , self.__color, self.__point_rect) #draw the point circle on the choosen coordinates
         
 
     def movement(self,direction):
