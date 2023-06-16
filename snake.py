@@ -2,9 +2,11 @@ import pygame
 import random 
 
 class App(object):
-
-    def loop(self):
+    def __init__(self) -> None:
         self.run()
+        self.loop()
+
+    def loop(self) -> None:
         self.__direction = "right"
         self.__score = 1
         self.__position_play = pygame.Vector2(self.__screen.get_height()/3,self.__screen.get_width()/3)#position of player
@@ -41,14 +43,14 @@ class App(object):
                 self.check_point()
             except: 
                 pass
-            
+
             pygame.display.flip()
             self.fps()
 
         self.exit()
 
     
-    def generate_coor(self):
+    def generate_coor(self) -> None:
 
         self.__position_point = pygame.Vector2(random.randint(50,self.__screen.get_height()-20),random.randint(50,self.__screen.get_height()-20))
 
@@ -65,60 +67,69 @@ class App(object):
         self.__GAINED = False
 
 
-    def end(self):
+    def end(self) -> None:
 
         self.background()
 
         #setting ending screen
         self.__font = pygame.font.SysFont('comicsans', 50)
-        self.__label = self.__font.render(f'You lost... Your score: {self.__score}', 1, "black", "white")
+        self.__label = self.__font.render(f'You lost... Your score: {self.__score-1}', 1, "black", "white")
         self.__screen.blit(self.__label, (self.__screen.get_width()/4, self.__screen.get_height()/2))
         
         pygame.display.flip() # refresh the screen
-        pygame.event.wait()
 
+        while True:
+            self.__choice = pygame.key.get_pressed()
+            
+            for event in pygame.event.get():
+                if self.__choice[pygame.K_y] or self.__choice[pygame.K_KP_ENTER]:
+                    self.loop()
+                elif self.__choice[pygame.K_n] or self.__choice[pygame.K_ESCAPE] or self.__choice[pygame.K_e] or event.type == pygame.QUIT:
+                    self.__RUNNING = False
+                
 
-    def check_lose(self):
+    def check_lose(self) -> bool:
 
         if self.__position_play.x > self.__screen.get_width() or self.__position_play.y > self.__screen.get_height() or self.__position_play.x < 0 or self.__position_play.y < 0:
             return True
         return False
 
 
-    def check_point(self):
+    def check_point(self) -> None:
 
         if self.__player_rect.colliderect(self.__point_rect):
             self.__score += self.__add
             self.__GAINED = True
-        else:
-            pass
 
 
-    def score_tab(self):
+
+    def score_tab(self) -> None:
 
         self.__font = pygame.font.SysFont('comicsans', 40)
         self.__label = self.__font.render(f'Score: {self.__score-1}         ', 1, "black", "white")
         self.__screen.blit(self.__label, (0,0))
 
 
-    def background(self):
+    def background(self) -> None:
 
         self.__screen.fill("#95BF50")
 
 
-    def player(self):
+    def player(self) -> None:
 
         self.__player_rect = pygame.Rect(self.__position_play.x, self.__position_play.y, 40, 40)
+
         pygame.draw.rect(self.__screen, "#1E8234", self.__player_rect)
 
 
-    def point(self):
+    def point(self) -> None:
         
         self.__point_rect = pygame.Rect(self.__position_point.x, self.__position_point.y, 40, 40)
+
         pygame.draw.rect(self.__screen , self.__color, self.__point_rect) 
         
 
-    def movement(self,direction):
+    def movement(self,direction) -> None:
 
         if direction == "left":         
             self.__position_play.x -= 10 #move to the left by 10 pixels
@@ -130,7 +141,7 @@ class App(object):
             self.__position_play.y += 10 #move to the down by 10 pixels
 
 
-    def event_handling(self,event): #handling events
+    def event_handling(self,event) -> None: #handling events
 
         if event[pygame.K_LEFT] or event[pygame.K_a]: #change direction to left
             self.__direction = "left"
@@ -142,12 +153,11 @@ class App(object):
             self.__direction = "down"
 
 
-    def fps(self):
+    def fps(self) -> None:
         self.__clock.tick(45)/1000 + self.__score #configurating frame rate
 
 
-
-    def run(self):
+    def run(self) -> None:
 
         pygame.init() #initialize application
         self.__screen = pygame.display.set_mode((800, 600)) #setting resolution
@@ -158,10 +168,8 @@ class App(object):
         pygame.display.set_icon(pygame.image.load("snake.jpg")) #changing the icon
 
 
-
-    def exit(self):
+    def exit(self) -> None:
         pygame.quit() #exit program in the safe way
 
 
 Snake = App()
-Snake.loop()
