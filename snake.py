@@ -10,6 +10,7 @@ class App(object):
         self.__direction = "right"
         self.__score = 1
         self.__position_play = pygame.Vector2(self.__screen.get_height()/3,self.__screen.get_width()/3)#position of player
+        self.__body =[[self.__position_play.x,self.__position_play.y]]
 
         self.__RUNNING = True
         self.__GAINED = True
@@ -29,7 +30,7 @@ class App(object):
                 self.__RUNNING = False
 
             self.player()
-            self.movement(self.__direction)
+            self.movement()
 
             self.event_handling(self.__key)
 
@@ -78,14 +79,14 @@ class App(object):
         
         pygame.display.flip() # refresh the screen
 
-        while True:
+        while self.__RUNNING:
             self.__choice = pygame.key.get_pressed()
             
             for event in pygame.event.get():
                 if self.__choice[pygame.K_y] or self.__choice[pygame.K_KP_ENTER]:
                     self.loop()
                 elif self.__choice[pygame.K_n] or self.__choice[pygame.K_ESCAPE] or self.__choice[pygame.K_e] or event.type == pygame.QUIT:
-                    self.__RUNNING = False
+                    pygame.quit()
                 
 
     def check_lose(self) -> bool:
@@ -100,6 +101,15 @@ class App(object):
         if self.__player_rect.colliderect(self.__point_rect):
             self.__score += self.__add
             self.__GAINED = True
+
+            if self.__direction == "left":
+                self.__body.append([self.__body[0][0]+40, self.__body[0][1]])
+            elif self.__direction == "right":
+                self.__body.append([self.__body[0][0]-40, self.__body[0][1]])
+            elif self.__direction == "up":
+                self.__body.append([self.__body[0][0], self.__body[0][1]+40])
+            elif self.__direction == "right":
+                self.__body.append([self.__body[0][0], self.__body[0][1]-40])
 
 
 
@@ -116,11 +126,14 @@ class App(object):
 
 
     def player(self) -> None:
+        
+        for x in range(0,len(self.__body)):
+            self.x = self.__body[x][0]
+            self.y = self.__body[x][1]
 
-        self.__player_rect = pygame.Rect(self.__position_play.x, self.__position_play.y, 40, 40)
-
-        pygame.draw.rect(self.__screen, "#1E8234", self.__player_rect)
-
+            self.__player_rect = pygame.Rect(self.x, self.y, 40, 40)
+            
+            pygame.draw.rect(self.__screen, "#1E8234", self.__player_rect)
 
     def point(self) -> None:
         
@@ -129,17 +142,17 @@ class App(object):
         pygame.draw.rect(self.__screen , self.__color, self.__point_rect) 
         
 
-    def movement(self,direction) -> None:
-
-        if direction == "left":         
-            self.__position_play.x -= 10 #move to the left by 10 pixels
-        elif direction == "right":
-            self.__position_play.x += 10 #move to the right by 10 pixels
-        elif direction == "up":
-            self.__position_play.y -= 10 #move to the up by 10 pixels
-        elif direction == "down":
-            self.__position_play.y += 10 #move to the down by 10 pixels
-
+    def movement(self) -> None:
+        
+        for x in range(0,len(self.__body)):
+            if self.__direction == "left":
+                self.__body[x][0] -= 10
+            elif self.__direction == "right":
+                self.__body[x][0] += 10
+            elif self.__direction == "up":
+                self.__body[x][1] -= 10
+            elif self.__direction == "down":
+                self.__body[x][1] += 10
 
     def event_handling(self,event) -> None: #handling events
 
