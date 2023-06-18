@@ -24,10 +24,7 @@ class App(object):
                     self.__RUNNING = False
 
             if self.check_lose():
-
                 self.end()
-                self.__score = 0
-                self.__RUNNING = False
 
             self.player()
             self.movement()
@@ -91,10 +88,18 @@ class App(object):
 
     def check_lose(self) -> bool:
 
-        if self.__position_play.x > self.__screen.get_width() or self.__position_play.y > self.__screen.get_height() or self.__position_play.x < 0 or self.__position_play.y < 0:
+        if self.__body[0][0] > self.__screen.get_width() or self.__body[0][1] > self.__screen.get_height() or self.__body[0][0] < 0 or self.__body[0][1] < 0:
             return True
         return False
 
+    def check_touch(self) -> bool:
+        player = pygame.Rect(self.__body[-1][0], self.__body[-1][1], 40,40)
+
+        for x in range(0,len(self.__body)-1):
+            enemy = pygame.Rect(self.__body[x][0],self.__body[x][1],40,40)
+            if player.colliderect(enemy):
+                return True
+        return False
 
     def check_point(self) -> None:
 
@@ -103,15 +108,13 @@ class App(object):
             self.__GAINED = True
 
             if self.__direction == "left":
-                self.__body.append([self.__body[0][0]+40, self.__body[0][1]])
+                self.__body.append([self.__body[0][0]+10, self.__body[0][1]])
             elif self.__direction == "right":
-                self.__body.append([self.__body[0][0]-40, self.__body[0][1]])
+                self.__body.append([self.__body[0][0]-10, self.__body[0][1]])
             elif self.__direction == "up":
-                self.__body.append([self.__body[0][0], self.__body[0][1]+40])
+                self.__body.append([self.__body[0][0], self.__body[0][1]+10])
             elif self.__direction == "right":
-                self.__body.append([self.__body[0][0], self.__body[0][1]-40])
-
-
+                self.__body.append([self.__body[0][0], self.__body[0][1]-10])
 
     def score_tab(self) -> None:
 
@@ -146,13 +149,15 @@ class App(object):
         
         for x in range(0,len(self.__body)):
             if self.__direction == "left":
-                self.__body[x][0] -= 10
+                self.__body.append([self.__body[x][0]-10,self.__body[x][1]])
             elif self.__direction == "right":
-                self.__body[x][0] += 10
+                self.__body.append([self.__body[x][0]+10,self.__body[x][1]])
             elif self.__direction == "up":
-                self.__body[x][1] -= 10
+                self.__body.append([self.__body[x][0],self.__body[x][1]-10])
             elif self.__direction == "down":
-                self.__body[x][1] += 10
+                self.__body.append([self.__body[x][0],self.__body[x][1]+10])
+            
+            del self.__body[0]
 
     def event_handling(self,event) -> None: #handling events
 
