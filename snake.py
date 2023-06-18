@@ -23,11 +23,11 @@ class App(object):
                 if event.type == pygame.QUIT or self.__key[pygame.K_q] or self.__key[pygame.K_ESCAPE] or self.__key[pygame.K_e]:   
                     self.__RUNNING = False
 
-            if self.check_lose():
-                self.end()
-
             self.player()
             self.movement()
+
+            if self.check_lose():
+                self.end()            
 
             self.event_handling(self.__key)
 
@@ -108,13 +108,13 @@ class App(object):
             self.__GAINED = True
 
             if self.__direction == "left":
-                self.__body.append([self.__body[0][0]+10, self.__body[0][1]])
+                self.__body.append([self.__body[-1][0]+10, self.__body[-1][1]])
             elif self.__direction == "right":
-                self.__body.append([self.__body[0][0]-10, self.__body[0][1]])
+                self.__body.append([self.__body[-1][0]-10, self.__body[-1][1]])
             elif self.__direction == "up":
-                self.__body.append([self.__body[0][0], self.__body[0][1]+10])
+                self.__body.append([self.__body[-1][0], self.__body[-1][1]+10])
             elif self.__direction == "right":
-                self.__body.append([self.__body[0][0], self.__body[0][1]-10])
+                self.__body.append([self.__body[-1][0], self.__body[-1][1]-10])
 
     def score_tab(self) -> None:
 
